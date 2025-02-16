@@ -34,11 +34,21 @@ st.title("薬物相互作用 計算ツール")
 # レイアウト調整
 col1, col2 = st.columns([2, 2])
 
+# セッションステートの初期化
+def reset_inputs():
+    st.session_state.CR = ""
+    st.session_state.AUCratio = ""
+    st.session_state.IR = ""
+    st.session_state.IC = ""
+
+if "CR" not in st.session_state:
+    reset_inputs()
+
 # 入力欄（デフォルト値を空欄に設定）
-CR = col1.text_input("CR (基質寄与率)", key="CR")
-AUCratio = col2.text_input("AUCratio", key="AUCratio")
-IR = col1.text_input("IR (阻害率)", key="IR")
-IC = col2.text_input("IC (誘導率)", key="IC")
+CR = col1.text_input("CR (基質寄与率)", st.session_state.CR, key="CR")
+AUCratio = col2.text_input("AUCratio", st.session_state.AUCratio, key="AUCratio")
+IR = col1.text_input("IR (阻害率)", st.session_state.IR, key="IR")
+IC = col2.text_input("IC (誘導率)", st.session_state.IC, key="IC")
 
 # 計算処理
 if st.button("計算"):
@@ -92,7 +102,5 @@ if st.button("計算"):
 
 # クリアボタンで計算前の状態に戻す
 if st.button("クリア"):
-    st.session_state.CR = ""
-    st.session_state.AUCratio = ""
-    st.session_state.IR = ""
-    st.session_state.IC = ""
+    reset_inputs()
+    st.experimental_rerun()
