@@ -42,18 +42,22 @@ IC = col2.number_input("IC (誘導率)", step=0.01, format="%.2f", key="IC")
 # 計算処理
 if st.button("計算"):
     results = {}
-    if CR > 0 and IR > 0:
-        results["AUCratio"] = calculate_auc_ratio(CR, IR)
-    if CR > 0 and AUCratio > 0:
-        results["IR"] = calculate_ir(CR, AUCratio)
-    if AUCratio > 0 and IR > 0:
-        results["CR"] = calculate_cr_from_ir(AUCratio, IR)
-    if CR > 0 and IC > 0:
-        results["AUCratio (誘導)"] = calculate_auc_ratio_ic(CR, IC)
-    if CR > 0 and AUCratio > 0:
-        results["IC"] = calculate_ic(CR, AUCratio)
-    if AUCratio > 0 and IC > 0:
-        results["CR"] = calculate_cr_from_ic(AUCratio, IC)
+    
+    if IR > 0 and IC == 0:
+        if CR > 0 and IR > 0:
+            results["AUCratio"] = calculate_auc_ratio(CR, IR)
+        if CR > 0 and AUCratio > 0:
+            results["IR"] = calculate_ir(CR, AUCratio)
+        if AUCratio > 0 and IR > 0:
+            results["CR"] = calculate_cr_from_ir(AUCratio, IR)
+    
+    if IC > 0 and IR == 0:
+        if CR > 0 and IC > 0:
+            results["AUCratio (誘導)"] = calculate_auc_ratio_ic(CR, IC)
+        if CR > 0 and AUCratio > 0:
+            results["IC"] = calculate_ic(CR, AUCratio)
+        if AUCratio > 0 and IC > 0:
+            results["CR"] = calculate_cr_from_ic(AUCratio, IC)
     
     results = {k: v for k, v in results.items() if v is not None}  # 無効な値を除外
     
