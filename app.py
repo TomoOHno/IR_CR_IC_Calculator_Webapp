@@ -54,9 +54,3 @@ if st.button("計算"):
         st.dataframe(history_df)
     else:
         st.warning("計算に必要な値を入力してください。")
-
-# Reset ボタン
-if st.button("Reset"):
-    for key in ["CR", "IR", "IC", "AUCratio"]:
-        st.session_state[key] = 0.0
-    st.rerun()
