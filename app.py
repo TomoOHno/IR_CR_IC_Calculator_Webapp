@@ -2,15 +2,21 @@ import streamlit as st
 import pandas as pd
 
 def calculate_auc_ratio(CR, IR):
+    if CR * IR >= 1:
+        return None
     return 1 / (1 - CR * IR)
 
 def calculate_ir(CR, AUCratio):
+    if AUCratio * CR == 0:
+        return None
     return (AUCratio - 1) / (AUCratio * CR)
 
 def calculate_auc_ratio_ic(CR, IC):
     return 1 / (1 + CR * IC)
 
 def calculate_ic(CR, AUCratio):
+    if AUCratio * CR == 0:
+        return None
     return (1 - AUCratio) / (AUCratio * CR)
 
 st.title("薬物相互作用 計算ツール")
@@ -20,10 +26,8 @@ col1, col2 = st.columns(2)
 
 # セッションステートの初期化
 def reset_inputs():
-    st.session_state["CR"] = 0.0
-    st.session_state["IR"] = 0.0
-    st.session_state["IC"] = 0.0
-    st.session_state["AUCratio"] = 0.0
+    for key in ["CR", "IR", "IC", "AUCratio"]:
+        st.session_state[key] = 0.0
 
 for key in ["CR", "IR", "IC", "AUCratio"]:
     if key not in st.session_state:
@@ -46,6 +50,8 @@ if st.button("計算"):
     if CR > 0 and AUCratio > 0:
         results["IC"] = calculate_ic(CR, AUCratio)
     
+    results = {k: v for k, v in results.items() if v is not None}  # 無効な値を除外
+    
     if results:
         st.write("### 計算結果")
         for key, value in results.items():
@@ -59,8 +65,9 @@ if st.button("計算"):
         history_df = pd.DataFrame(st.session_state.history)
         st.dataframe(history_df)
     else:
-        st.warning("計算に必要な値を入力してください。")
+        st.warning("計算に必要な値を入力するか、適切な値を設定してください。")
 
 # Reset ボタン
 if st.button("Reset"):
     reset_inputs()
+    st.experimental_rerun()
