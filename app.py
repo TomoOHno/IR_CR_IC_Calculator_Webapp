@@ -17,6 +17,11 @@ st.title("薬物相互作用 計算ツール")
 
 # 入力欄
 col1, col2 = st.columns(2)
+st.session_state.setdefault("CR", 0.0)
+st.session_state.setdefault("IR", 0.0)
+st.session_state.setdefault("IC", 0.0)
+st.session_state.setdefault("AUCratio", 0.0)
+
 CR = col1.number_input("CR (基質寄与率)", min_value=0.0, step=0.01, format="%.2f", key="CR")
 IR = col2.number_input("IR (阻害率)", min_value=0.0, step=0.01, format="%.2f", key="IR")
 IC = col1.number_input("IC (誘導率)", step=0.01, format="%.2f", key="IC")
@@ -51,7 +56,7 @@ if st.button("計算"):
 
 # Reset ボタン
 if st.button("Reset"):
-    st.session_state.CR = None
-    st.session_state.IR = None
-    st.session_state.IC = None
-    st.session_state.AUCratio = None
+    st.session_state.CR = 0.0
+    st.session_state.IR = 0.0
+    st.session_state.IC = 0.0
+    st.session_state.AUCratio = 0.0
