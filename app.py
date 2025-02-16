@@ -24,12 +24,6 @@ st.title("薬物相互作用 計算ツール")
 # 入力欄
 col1, col2 = st.columns(2)
 
-def clear_inputs():
-    st.session_state.CR = 0.0
-    st.session_state.IR = 0.0
-    st.session_state.IC = 0.0
-    st.session_state.AUCratio = 0.0
-
 CR = col1.number_input("CR (基質寄与率)", min_value=0.0, step=0.01, format="%.2f", key="CR")
 IR = col2.number_input("IR (阻害率)", min_value=0.0, step=0.01, format="%.2f", key="IR")
 IC = col1.number_input("IC (誘導率)", step=0.01, format="%.2f", key="IC")
@@ -63,7 +57,3 @@ if st.button("計算"):
         st.dataframe(history_df)
     else:
         st.warning("計算に必要な値を入力するか、適切な値を設定してください。")
-
-# Clear ボタンで入力欄をクリア（計算履歴は保持）
-if st.button("クリア"):
-    clear_inputs()
