@@ -40,22 +40,24 @@ AUCratio = col2.number_input("AUCratio", min_value=0.0, step=0.01, format="%.2f"
 IR = col1.number_input("IR (阻害率)", min_value=0.0, step=0.01, format="%.2f", key="IR")
 IC = col2.number_input("IC (誘導率)", step=0.01, format="%.2f", key="IC")
 
-# 簡易電卓
+# テンキー形式の電卓
 with col3:
     st.write("### 電卓")
-    calc_value = st.text_input("", "")
-    if st.button("7"): calc_value += "7"
-    if st.button("8"): calc_value += "8"
-    if st.button("9"): calc_value += "9"
-    if st.button("4"): calc_value += "4"
-    if st.button("5"): calc_value += "5"
-    if st.button("6"): calc_value += "6"
-    if st.button("1"): calc_value += "1"
-    if st.button("2"): calc_value += "2"
-    if st.button("3"): calc_value += "3"
-    if st.button("0"): calc_value += "0"
-    if st.button("."): calc_value += "."
-    if st.button("C"): calc_value = ""
+    calc_value = st.text_input("", "", key="calc_display")
+    buttons = [
+        ["7", "8", "9"],
+        ["4", "5", "6"],
+        ["1", "2", "3"],
+        ["0", ".", "C"]
+    ]
+    for row in buttons:
+        cols = st.columns(3)
+        for i, button in enumerate(row):
+            if cols[i].button(button):
+                if button == "C":
+                    calc_value = ""
+                else:
+                    calc_value += button
     if st.button("Enter"):
         try:
             eval_result = eval(calc_value)
