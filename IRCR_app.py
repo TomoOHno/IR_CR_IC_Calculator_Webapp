@@ -35,18 +35,18 @@ st.title("薬物相互作用 計算ツール")
 col1, col2 = st.columns([2, 2])
 
 # 入力欄（デフォルト値を空欄に設定）
-CR = col1.text_input("CR (基質寄与率)", "")
-AUCratio = col2.text_input("AUCratio", "")
-IR = col1.text_input("IR (阻害率)", "")
-IC = col2.text_input("IC (誘導率)", "")
+CR = col1.text_input("CR (基質寄与率)", key="CR")
+AUCratio = col2.text_input("AUCratio", key="AUCratio")
+IR = col1.text_input("IR (阻害率)", key="IR")
+IC = col2.text_input("IC (誘導率)", key="IC")
 
 # 計算処理
 if st.button("計算"):
     try:
-        CR = float(CR) if CR else 0.0
-        AUCratio = float(AUCratio) if AUCratio else 0.0
-        IR = float(IR) if IR else 0.0
-        IC = float(IC) if IC else 0.0
+        CR = float(st.session_state.CR) if st.session_state.CR else 0.0
+        AUCratio = float(st.session_state.AUCratio) if st.session_state.AUCratio else 0.0
+        IR = float(st.session_state.IR) if st.session_state.IR else 0.0
+        IC = float(st.session_state.IC) if st.session_state.IC else 0.0
     except ValueError:
         st.warning("数値を正しく入力してください。")
         st.stop()
@@ -89,3 +89,10 @@ if st.button("計算"):
         st.dataframe(history_df)
     else:
         st.warning("計算に必要な値を入力するか、適切な値を設定してください。")
+
+# クリアボタンで計算前の状態に戻す
+if st.button("クリア"):
+    st.session_state.CR = ""
+    st.session_state.AUCratio = ""
+    st.session_state.IR = ""
+    st.session_state.IC = ""
