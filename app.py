@@ -11,6 +11,11 @@ def calculate_ir(CR, AUCratio):
         return None
     return (AUCratio - 1) / (AUCratio * CR)
 
+def calculate_cr_from_ir(AUCratio, IR):
+    if AUCratio * IR == 0:
+        return None
+    return (AUCratio - 1) / (AUCratio * IR)
+
 def calculate_auc_ratio_ic(CR, IC):
     return 1 / (1 + CR * IC)
 
@@ -19,17 +24,10 @@ def calculate_ic(CR, AUCratio):
         return None
     return (1 - AUCratio) / (AUCratio * CR)
 
-def calculate_cr(IR, AUCratio):
-    if IR == 0 or AUCratio == 1:
+def calculate_cr_from_ic(AUCratio, IC):
+    if AUCratio * IC == 0:
         return None
-    return (AUCratio - 1) / (AUCratio * IR)
-
-def calculate_auc_ratio_general(CR, IR, IC):
-    if CR is not None and IR is not None:
-        return calculate_auc_ratio(CR, IR)
-    elif CR is not None and IC is not None:
-        return calculate_auc_ratio_ic(CR, IC)
-    return None
+    return (1 - AUCratio) / (AUCratio * IC)
 
 st.title("薬物相互作用 計算ツール")
 
@@ -48,14 +46,14 @@ if st.button("計算"):
         results["AUCratio"] = calculate_auc_ratio(CR, IR)
     if CR > 0 and AUCratio > 0:
         results["IR"] = calculate_ir(CR, AUCratio)
+    if AUCratio > 0 and IR > 0:
+        results["CR (from IR, AUCratio)"] = calculate_cr_from_ir(AUCratio, IR)
     if CR > 0 and IC > 0:
         results["AUCratio (誘導)"] = calculate_auc_ratio_ic(CR, IC)
     if CR > 0 and AUCratio > 0:
         results["IC"] = calculate_ic(CR, AUCratio)
-    if IR > 0 and AUCratio > 0:
-        results["CR"] = calculate_cr(IR, AUCratio)
-    if CR > 0 and (IR > 0 or IC > 0):
-        results["AUCratio (総合)"] = calculate_auc_ratio_general(CR, IR, IC)
+    if AUCratio > 0 and IC > 0:
+        results["CR (from IC, AUCratio)"] = calculate_cr_from_ic(AUCratio, IC)
     
     results = {k: v for k, v in results.items() if v is not None}  # 無効な値を除外
     
