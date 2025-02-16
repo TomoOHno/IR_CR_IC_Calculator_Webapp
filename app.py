@@ -17,10 +17,10 @@ st.title("薬物相互作用 計算ツール")
 
 # 入力欄
 col1, col2 = st.columns(2)
-CR = col1.number_input("CR (基質寄与率)", min_value=0.0, step=0.01, format="%.2f")
-IR = col2.number_input("IR (阻害率)", min_value=0.0, step=0.01, format="%.2f")
-IC = col1.number_input("IC (誘導率)", step=0.01, format="%.2f")
-AUCratio = col2.number_input("AUCratio", min_value=0.0, step=0.01, format="%.2f")
+CR = col1.number_input("CR (基質寄与率)", min_value=0.0, step=0.01, format="%.2f", key="CR")
+IR = col2.number_input("IR (阻害率)", min_value=0.0, step=0.01, format="%.2f", key="IR")
+IC = col1.number_input("IC (誘導率)", step=0.01, format="%.2f", key="IC")
+AUCratio = col2.number_input("AUCratio", min_value=0.0, step=0.01, format="%.2f", key="AUCratio")
 
 # 計算処理
 if st.button("計算"):
@@ -51,4 +51,7 @@ if st.button("計算"):
 
 # Reset ボタン
 if st.button("Reset"):
+    for key in ["CR", "IR", "IC", "AUCratio"]:
+        st.session_state[key] = 0.0
+    st.session_state.history = []
     st.experimental_rerun()
