@@ -58,4 +58,5 @@ if st.button("計算"):
 # Reset ボタン
 if st.button("Reset"):
     for key in ["CR", "IR", "IC", "AUCratio"]:
-        st.session_state[key] = 0.0
+        st.session_state[key] = None
+    st.rerun()
