@@ -34,41 +34,53 @@ st.title("薬物相互作用 計算ツール")
 # レイアウト調整
 col1, col2, col3 = st.columns([2, 2, 1])
 
+# セッション変数の初期化
+def init_session_state():
+    for key in ["CR", "AUCratio", "IR", "IC", "calc_display"]:
+        if key not in st.session_state:
+            st.session_state[key] = ""
+init_session_state()
+
 # 入力欄
-CR = col1.number_input("CR (基質寄与率)", min_value=0.0, step=0.01, format="%.2f", key="CR")
-AUCratio = col2.number_input("AUCratio", min_value=0.0, step=0.01, format="%.2f", key="AUCratio")
-IR = col1.number_input("IR (阻害率)", min_value=0.0, step=0.01, format="%.2f", key="IR")
-IC = col2.number_input("IC (誘導率)", step=0.01, format="%.2f", key="IC")
+CR = col1.text_input("CR (基質寄与率)", st.session_state.CR, key="CR")
+AUCratio = col2.text_input("AUCratio", st.session_state.AUCratio, key="AUCratio")
+IR = col1.text_input("IR (阻害率)", st.session_state.IR, key="IR")
+IC = col2.text_input("IC (誘導率)", st.session_state.IC, key="IC")
 
 # テンキー形式の電卓
+def update_field(value):
+    if st.session_state.selected_field:
+        st.session_state[st.session_state.selected_field] += value
+
+def clear_field():
+    if st.session_state.selected_field:
+        st.session_state[st.session_state.selected_field] = ""
+
 with col3:
     st.write("### 電卓")
-    calc_value = st.text_input("", "", key="calc_display")
-    buttons = [
-        ["7", "8", "9"],
-        ["4", "5", "6"],
-        ["1", "2", "3"],
-        ["0", ".", "C"]
-    ]
+    selected_field = st.radio("入力対象", ("CR", "AUCratio", "IR", "IC"), key="selected_field")
+    buttons = [["7", "8", "9"], ["4", "5", "6"], ["1", "2", "3"], ["0", ".", "C"]]
     for row in buttons:
         cols = st.columns(3)
         for i, button in enumerate(row):
             if cols[i].button(button):
                 if button == "C":
-                    calc_value = ""
+                    clear_field()
                 else:
-                    calc_value += button
-    if st.button("Enter"):
-        try:
-            eval_result = eval(calc_value)
-            st.write(f"結果: {eval_result}")
-        except:
-            st.write("エラー")
+                    update_field(button)
 
 # 計算処理
 if st.button("計算"):
-    results = {}
+    try:
+        CR = float(st.session_state.CR) if st.session_state.CR else 0.0
+        AUCratio = float(st.session_state.AUCratio) if st.session_state.AUCratio else 0.0
+        IR = float(st.session_state.IR) if st.session_state.IR else 0.0
+        IC = float(st.session_state.IC) if st.session_state.IC else 0.0
+    except ValueError:
+        st.warning("数値を正しく入力してください。")
+        st.stop()
     
+    results = {}
     if IR > 0 and IC == 0:
         if CR > 0 and IR > 0:
             results["AUCratio"] = calculate_auc_ratio(CR, IR)
