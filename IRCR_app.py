@@ -36,13 +36,13 @@ col1, col2 = st.columns([2, 2])
 
 # セッションステートの初期化
 def reset_inputs():
-    st.session_state["CR"] = "0"
-    st.session_state["AUCratio"] = "0"
-    st.session_state["IR"] = "0"
-    st.session_state["IC"] = "0"
+    st.session_state.clear()
 
-if "CR" not in st.session_state:
-    reset_inputs()
+def init_session():
+    for key in ["CR", "AUCratio", "IR", "IC"]:
+        if key not in st.session_state:
+            st.session_state[key] = ""
+init_session()
 
 # 入力欄（デフォルト値を空欄に設定）
 CR = col1.text_input("CR (基質寄与率)", st.session_state["CR"], key="CR")
@@ -103,4 +103,5 @@ if st.button("計算"):
 # クリアボタンで計算前の状態に戻す
 if st.button("クリア"):
     reset_inputs()
+    init_session()
     st.rerun()
