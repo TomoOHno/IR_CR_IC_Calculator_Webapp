@@ -19,6 +19,12 @@ st.title("薬物相互作用 計算ツール")
 col1, col2 = st.columns(2)
 
 # セッションステートの初期化
+def reset_inputs():
+    st.session_state["CR"] = 0.0
+    st.session_state["IR"] = 0.0
+    st.session_state["IC"] = 0.0
+    st.session_state["AUCratio"] = 0.0
+
 for key in ["CR", "IR", "IC", "AUCratio"]:
     if key not in st.session_state:
         st.session_state[key] = 0.0
@@ -54,3 +60,7 @@ if st.button("計算"):
         st.dataframe(history_df)
     else:
         st.warning("計算に必要な値を入力してください。")
+
+# Reset ボタン
+if st.button("Reset"):
+    reset_inputs()
