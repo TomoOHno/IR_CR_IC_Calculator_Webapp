@@ -34,14 +34,33 @@ st.title("薬物相互作用 計算ツール")
 # レイアウト調整
 col1, col2 = st.columns([2, 2])
 
-# 入力欄
-CR = col1.number_input("CR (基質寄与率)", min_value=0.0, step=0.01, format="%.2f")
-AUCratio = col2.number_input("AUCratio", min_value=0.0, step=0.01, format="%.2f")
-IR = col1.number_input("IR (阻害率)", min_value=0.0, step=0.01, format="%.2f")
-IC = col2.number_input("IC (誘導率)", step=0.01, format="%.2f")
+# セッションステートの初期化
+def reset_inputs():
+    st.session_state.clear()
+
+def init_session():
+    for key in ["CR", "AUCratio", "IR", "IC"]:
+        if key not in st.session_state:
+            st.session_state[key] = ""
+init_session()
+
+# 入力欄（デフォルト値を空欄に設定）
+CR = col1.text_input("CR (基質寄与率)", st.session_state["CR"], key="CR")
+AUCratio = col2.text_input("AUCratio", st.session_state["AUCratio"], key="AUCratio")
+IR = col1.text_input("IR (阻害率)", st.session_state["IR"], key="IR")
+IC = col2.text_input("IC (誘導率)", st.session_state["IC"], key="IC")
 
 # 計算処理
 if st.button("計算"):
+    try:
+        CR = float(st.session_state.CR) if st.session_state.CR else 0.0
+        AUCratio = float(st.session_state.AUCratio) if st.session_state.AUCratio else 0.0
+        IR = float(st.session_state.IR) if st.session_state.IR else 0.0
+        IC = float(st.session_state.IC) if st.session_state.IC else 0.0
+    except ValueError:
+        st.warning("数値を正しく入力してください。")
+        st.stop()
+    
     results = {}
     
     if IR > 0 and IC == 0:
@@ -80,3 +99,9 @@ if st.button("計算"):
         st.dataframe(history_df)
     else:
         st.warning("計算に必要な値を入力するか、適切な値を設定してください。")
+
+# クリアボタンで計算前の状態に戻す
+if st.button("クリア"):
+    reset_inputs()
+    init_session()
+    st.rerun()
