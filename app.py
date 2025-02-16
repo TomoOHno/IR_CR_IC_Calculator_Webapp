@@ -59,6 +59,10 @@ if st.button("計算"):
         if AUCratio > 0 and IC > 0:
             results["CR"] = calculate_cr_from_ic(AUCratio, IC)
     
+    if IR == 0 and IC == 0 and CR > 0 and AUCratio > 0:
+        results["IR"] = calculate_ir(CR, AUCratio)
+        results["IC"] = calculate_ic(CR, AUCratio)
+    
     results = {k: v for k, v in results.items() if v is not None}  # 無効な値を除外
     
     if results:
