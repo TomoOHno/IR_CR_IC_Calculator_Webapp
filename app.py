@@ -31,13 +31,37 @@ def calculate_cr_from_ic(AUCratio, IC):
 
 st.title("薬物相互作用 計算ツール")
 
-# 入力欄
-col1, col2 = st.columns(2)
+# レイアウト調整
+col1, col2, col3 = st.columns([2, 2, 1])
 
+# 入力欄
 CR = col1.number_input("CR (基質寄与率)", min_value=0.0, step=0.01, format="%.2f", key="CR")
 AUCratio = col2.number_input("AUCratio", min_value=0.0, step=0.01, format="%.2f", key="AUCratio")
 IR = col1.number_input("IR (阻害率)", min_value=0.0, step=0.01, format="%.2f", key="IR")
 IC = col2.number_input("IC (誘導率)", step=0.01, format="%.2f", key="IC")
+
+# 簡易電卓
+with col3:
+    st.write("### 電卓")
+    calc_value = st.text_input("", "")
+    if st.button("7"): calc_value += "7"
+    if st.button("8"): calc_value += "8"
+    if st.button("9"): calc_value += "9"
+    if st.button("4"): calc_value += "4"
+    if st.button("5"): calc_value += "5"
+    if st.button("6"): calc_value += "6"
+    if st.button("1"): calc_value += "1"
+    if st.button("2"): calc_value += "2"
+    if st.button("3"): calc_value += "3"
+    if st.button("0"): calc_value += "0"
+    if st.button("."): calc_value += "."
+    if st.button("C"): calc_value = ""
+    if st.button("Enter"):
+        try:
+            eval_result = eval(calc_value)
+            st.write(f"結果: {eval_result}")
+        except:
+            st.write("エラー")
 
 # 計算処理
 if st.button("計算"):
