@@ -17,14 +17,11 @@ st.title("薬物相互作用 計算ツール")
 
 # 入力欄
 col1, col2 = st.columns(2)
-if "CR" not in st.session_state:
-    st.session_state.CR = 0.0
-if "IR" not in st.session_state:
-    st.session_state.IR = 0.0
-if "IC" not in st.session_state:
-    st.session_state.IC = 0.0
-if "AUCratio" not in st.session_state:
-    st.session_state.AUCratio = 0.0
+
+# セッションステートの初期化
+for key in ["CR", "IR", "IC", "AUCratio"]:
+    if key not in st.session_state:
+        st.session_state[key] = 0.0
 
 CR = col1.number_input("CR (基質寄与率)", min_value=0.0, step=0.01, format="%.2f", key="CR")
 IR = col2.number_input("IR (阻害率)", min_value=0.0, step=0.01, format="%.2f", key="IR")
@@ -60,7 +57,5 @@ if st.button("計算"):
 
 # Reset ボタン
 if st.button("Reset"):
-    st.session_state["CR"] = 0.0
-    st.session_state["IR"] = 0.0
-    st.session_state["IC"] = 0.0
-    st.session_state["AUCratio"] = 0.0
+    for key in ["CR", "IR", "IC", "AUCratio"]:
+        st.session_state[key] = 0.0
